@@ -1,0 +1,25 @@
+#include <windows.h>
+#include "bclock.h"
+
+BCLOCK MENU
+	{
+	POPUP "&Base"
+		{
+		MENUITEM "&Binary",		IDM_BIN
+		MENUITEM "&Octal",		IDM_OCT
+		MENUITEM "&Decimal",		IDM_DEC
+		MENUITEM "&Hexadecimal",	IDM_HEX
+		MENUITEM SEPARATOR
+		MENUITEM "&Arbitrary...",	IDM_ARBITRARY
+		}
+	POPUP "&Format"
+		{
+		MENUITEM "&Font...",		IDM_FONT
+		MENUITEM "&Background...",	IDM_BACKGROUND
+		}
+	POPUP "&Help"
+		{
+		MENUITEM "&About..."		IDM_ABOUT
+		}
+	}
+                             
