@@ -1,3 +1,4 @@
+#include <stdlib.h>
 #include "bclock.h"
 
 int max_place_array[15] = { 8, 6, 4, 4, 4, 3, 3, 3, 2, 3, 3, 3, 3, 3, 2 };
@@ -12,12 +13,12 @@ int power(int base, int exponent)
 		return base * (power(base,exponent - 1));
 }
 
-char* base_cvt(int base, int number)
+char * base_cvt(int base, int number)
 {
 	char *temp, index = 0;
 	int count;
 	int max_places = max_place_array[base - 2];
-	temp = new char[max_places + 1];
+	temp = (char *) malloc((max_places + 1) * sizeof(char));
 	for (count = max_places; count; count--) {
 		temp[index++] = set[number / power(base,count - 1)];
 		number %= power(base,count - 1);

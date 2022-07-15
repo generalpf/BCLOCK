@@ -4,10 +4,9 @@
 #include <commdlg.h>
 #include "bclock.h"
 
-long FAR PASCAL _export WndProc (HWND, UINT, UINT, LONG) ;
+LRESULT CALLBACK WndProc(HWND hwnd, UINT message, UINT wParam, LONG lParam);
 
-int PASCAL WinMain(HANDLE hInstance, HANDLE hPrevInstance,
-                    LPSTR lpszCmdParam, int nCmdShow)
+int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpszCmdParam, int nCmdShow)
 {
 	static char szAppName[] = "BClock";
 	HWND	hwnd ;
@@ -18,7 +17,7 @@ int PASCAL WinMain(HANDLE hInstance, HANDLE hPrevInstance,
 	if (!hPrevInstance)
 	{
 		wndclass.style			= CS_HREDRAW | CS_VREDRAW ;
-		wndclass.lpfnWndProc	= WndProc ;
+		wndclass.lpfnWndProc	= (WNDPROC) WndProc ;
 		wndclass.cbClsExtra		= 0 ;
 		wndclass.cbWndExtra		= 0 ;
 		wndclass.hInstance		= hInstance ;
@@ -48,7 +47,7 @@ int PASCAL WinMain(HANDLE hInstance, HANDLE hPrevInstance,
 	
 	CheckMenuItem(hMenu,IDM_DEC,MF_CHECKED);
 	            
-	ShowWindow (hwnd,nCmdShow);
+	ShowWindow(hwnd,nCmdShow);
 	UpdateWindow(hwnd);                       
                                                                                      
 	SetTimer(hwnd,BCLOCK_TIMER,1000,NULL);
@@ -61,7 +60,7 @@ int PASCAL WinMain(HANDLE hInstance, HANDLE hPrevInstance,
 	return msg.wParam;
 }
 
-long FAR PASCAL _export WndProc(HWND hwnd, UINT message, UINT wParam, LONG lParam)
+LRESULT CALLBACK WndProc(HWND hwnd, UINT message, UINT wParam, LONG lParam)
 {
 	HDC hdc;   				// the device context for drawing and bkgnd fills
 	PAINTSTRUCT ps;			// the paint structure for WM_PAINT
@@ -167,7 +166,13 @@ long FAR PASCAL _export WndProc(HWND hwnd, UINT message, UINT wParam, LONG lPara
 				hFont = CreateFontIndirect(&lf);
          		hOldFont = SelectObject(hdc,hFont);
          		
-         		wsprintf(time_string,"%s:%s:%s%c",(LPSTR) base_cvt(Base,datetime->tm_hour),(LPSTR) base_cvt(Base,datetime->tm_min),(LPSTR) base_cvt(Base,datetime->tm_sec),dayhalf);
+				LPSTR converted_hour = base_cvt(Base, datetime->tm_hour);
+				LPSTR converted_minute = base_cvt(Base, datetime->tm_min);
+				LPSTR converted_second = base_cvt(Base, datetime->tm_sec);
+				wsprintf(time_string,"%s:%s:%s%c", converted_hour, converted_minute, converted_second, dayhalf);
+				free(converted_hour);
+				free(converted_minute);
+				free(converted_second);
   				SetTextColor(hdc,cf.rgbColors);
   				SetBkColor(hdc,cc.rgbResult);
   				DrawText(hdc,time_string, -1, &rect,DT_SINGLELINE | DT_CENTER | DT_VCENTER);
@@ -203,5 +208,3 @@ long FAR PASCAL _export WndProc(HWND hwnd, UINT message, UINT wParam, LONG lPara
 
 	return DefWindowProc(hwnd,message,wParam,lParam);
 }
-                                   
-               

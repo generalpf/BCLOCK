@@ -12,4 +12,4 @@
 #define BCLOCK_TIMER 1   
 
 int power(int base, int exponent);
-char* base_cvt(int base, int number);
+char * base_cvt(int base, int number);
