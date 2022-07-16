@@ -1,10 +1,10 @@
-build: Base_cvt.obj Bclock.obj Bclock.res
-	link $? Bclock.res user32.lib gdi32.lib comdlg32.lib /out:Bclock.exe
+build: Bclock.obj Bclock.res
+	link $? user32.lib gdi32.lib comdlg32.lib /out:Bclock.exe
 
 Bclock.res: Bclock.rc
 	rc $?
 
-%.obj: %.c
+Bclock.obj: Bclock.c
 	cl /c /W3 $?
 
 clean:

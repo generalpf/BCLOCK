@@ -44,12 +44,12 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpszCmd
 
 	hMenu = LoadMenu(hInstance,"BCLOCK");
 	SetMenu(hwnd,hMenu);    
-	
+
 	CheckMenuItem(hMenu,IDM_DEC,MF_CHECKED);
-	            
+
 	ShowWindow(hwnd,nCmdShow);
-	UpdateWindow(hwnd);                       
-                                                                                     
+	UpdateWindow(hwnd);
+
 	SetTimer(hwnd,BCLOCK_TIMER,1000,NULL);
 
 	while (GetMessage(&msg,NULL,0,0))
@@ -157,23 +157,24 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT message, UINT wParam, LONG lParam)
 				time(&lTime);
 				datetime = localtime(&lTime);  
 				dayhalf = 'a';
-				if (datetime->tm_hour > 12)
+				if (datetime->tm_hour >= 12)
 				{
 					dayhalf = 'p';
-					datetime->tm_hour -= 12;
+					if (datetime->tm_hour > 12)
+					{
+						datetime->tm_hour -= 12;
+					}
 				}
 				
 				hFont = CreateFontIndirect(&lf);
          		hOldFont = SelectObject(hdc,hFont);
-         		
-				LPSTR converted_hour = base_cvt(Base, datetime->tm_hour);
-				LPSTR converted_minute = base_cvt(Base, datetime->tm_min);
-				LPSTR converted_second = base_cvt(Base, datetime->tm_sec);
-				wsprintf(time_string,"%s:%s:%s%c", converted_hour, converted_minute, converted_second, dayhalf);
-				free(converted_hour);
-				free(converted_minute);
-				free(converted_second);
-  				SetTextColor(hdc,cf.rgbColors);
+         	
+				char hour[8], minute[8], second[8];
+				_itoa_s(datetime->tm_hour, hour, 8, Base);
+				_itoa_s(datetime->tm_min, minute, 8, Base);
+				_itoa_s(datetime->tm_sec, second, 8, Base);
+				wsprintf(time_string,"%s:%s:%s%c", hour, minute, second, dayhalf);
+				SetTextColor(hdc,cf.rgbColors);
   				SetBkColor(hdc,cc.rgbResult);
   				DrawText(hdc,time_string, -1, &rect,DT_SINGLELINE | DT_CENTER | DT_VCENTER);
       
@@ -204,7 +205,8 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT message, UINT wParam, LONG lParam)
 		case WM_DESTROY:
 			PostQuitMessage(0);
 			return 0;
-	}
 
-	return DefWindowProc(hwnd,message,wParam,lParam);
+		default:
+			return DefWindowProc(hwnd, message, wParam, lParam);
+	}	
 }

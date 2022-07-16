@@ -7,9 +7,6 @@
 #define IDM_FONT 31
 #define IDM_BACKGROUND 32
 
-#define IDM_ABOUT 41                           
+#define IDM_ABOUT 41                         
                            
-#define BCLOCK_TIMER 1   
-
-int power(int base, int exponent);
-char * base_cvt(int base, int number);
+#define BCLOCK_TIMER 1
