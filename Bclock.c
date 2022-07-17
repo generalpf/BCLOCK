@@ -77,8 +77,8 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT message, UINT wParam, LONG lParam)
 	static COLORREF custom[16];	// the custom colors for the Color dialog
 
     char time_string[128], dayhalf;	// junk for getting and formatting the time
-	struct tm* datetime;
-	time_t lTime;  
+	struct tm datetime;
+	__time64_t lTime;
 	
 	static int Base = 10, MenuBase = IDM_DEC;	// Base for printing and menu base
 	int i;										// for loop...  this compiler SUCKS
@@ -90,7 +90,6 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT message, UINT wParam, LONG lParam)
 		case WM_CREATE:
 			lb.lbStyle = BS_SOLID;			// solid background
 			lb.lbColor = RGB(255,255,255);	// default to a white background
-			lb.lbHatch = NULL;				// no hatch
 
 			memset(&lf,0,sizeof(LOGFONT));				// clear all fields
 			lstrcpy(lf.lfFaceName,"Times New Roman");	// default Times New Roman
@@ -144,7 +143,7 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT message, UINT wParam, LONG lParam)
 				case IDM_BACKGROUND:	if (ChooseColor(&cc))
 											lb.lbColor = cc.rgbResult;
 										break;
-         		case IDM_ABOUT:	MessageBox(hwnd,(LPCSTR) "BaseClock 0.91\nDeveloped by Ryan Walberg",(LPCSTR) "About BaseClock",MB_APPLMODAL | MB_ICONINFORMATION | MB_OK);
+         		case IDM_ABOUT:	MessageBox(hwnd,(LPCSTR) "BaseClock 1.0\nDeveloped by Ryan Walberg",(LPCSTR) "About BaseClock",MB_APPLMODAL | MB_ICONINFORMATION | MB_OK);
          	}
 
          	InvalidateRect(hwnd,NULL,TRUE);
@@ -155,14 +154,14 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT message, UINT wParam, LONG lParam)
 				GetClientRect(hwnd,&rect);
 			
 				time(&lTime);
-				datetime = localtime(&lTime);  
+				localtime_s(&datetime, &lTime);  
 				dayhalf = 'a';
-				if (datetime->tm_hour >= 12)
+				if (datetime.tm_hour >= 12)
 				{
 					dayhalf = 'p';
-					if (datetime->tm_hour > 12)
+					if (datetime.tm_hour > 12)
 					{
-						datetime->tm_hour -= 12;
+						datetime.tm_hour -= 12;
 					}
 				}
 				
@@ -170,9 +169,9 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT message, UINT wParam, LONG lParam)
          		hOldFont = SelectObject(hdc,hFont);
          	
 				char hour[8], minute[8], second[8];
-				_itoa_s(datetime->tm_hour, hour, 8, Base);
-				_itoa_s(datetime->tm_min, minute, 8, Base);
-				_itoa_s(datetime->tm_sec, second, 8, Base);
+				_itoa_s(datetime.tm_hour, hour, 8, Base);
+				_itoa_s(datetime.tm_min, minute, 8, Base);
+				_itoa_s(datetime.tm_sec, second, 8, Base);
 				wsprintf(time_string,"%s:%s:%s%c", hour, minute, second, dayhalf);
 				SetTextColor(hdc,cf.rgbColors);
   				SetBkColor(hdc,cc.rgbResult);

@@ -7,6 +7,6 @@
 #define IDM_FONT 31
 #define IDM_BACKGROUND 32
 
-#define IDM_ABOUT 41                         
-                           
+#define IDM_ABOUT 41
+
 #define BCLOCK_TIMER 1
